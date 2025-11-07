@@ -61,7 +61,8 @@ import java.util.List;
 
         @Override
         public String toString() {
-            return "Sandwich{size=" + size + "\", bread=" + bread +
-                    ", toasted=" + toasted + ", toppings=" + toppings + "}";
+            return "Sandwich{size='" + size + "', bread='" + bread +
+                    "', toasted=" + toasted + ", toppings=" + toppings + "}";
         }
+
     }
