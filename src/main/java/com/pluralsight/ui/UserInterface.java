@@ -63,7 +63,7 @@ public class UserInterface {
                     addDrink(order);
                     break;
                 case "3":
-                    addChips(order);
+                    addChipsFlow(order);
                     break;
                 case "4":
                     checkout(order);
@@ -155,6 +155,33 @@ public class UserInterface {
             }
         }
     }
+    private void addChipsFlow(Order order) {
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Chips==");
+            System.out.println("1) Add Chips");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    addChipType(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
+    }
+    private void addChipType(Order order) {
+        System.out.println("Add Chips");
+    }
     private void chooseDrinkSize(Order order) {
         System.out.println("Choose Drink Size");
     }
@@ -183,11 +210,6 @@ public class UserInterface {
     }
     private void toasted(Order order){
         System.out.println("Add toasted option");
-    }
-
-    private void addChips(Order order) {
-        System.out.println("Add Chips flow");
-
     }
 
     private void checkout(Order order) {
