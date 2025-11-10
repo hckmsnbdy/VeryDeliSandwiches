@@ -57,16 +57,16 @@ public class UserInterface {
 
             switch (input) {
                 case "1":
-                    addSandwichFlow(order);
+                    addSandwich(order);
                     break;
                 case "2":
-                    addDrinkFlow(order);
+                    addDrink(order);
                     break;
                 case "3":
-                    addChipsFlow(order);
+                    addChips(order);
                     break;
                 case "4":
-                    checkoutFlow(order);
+                    checkout(order);
                     ordering = false;
                     break;
                 case "0":
@@ -79,7 +79,7 @@ public class UserInterface {
         }
     }
 
-    private void addSandwichFlow(Order order) {
+    private void addSandwich(Order order) {
         boolean ordering = true;
 
         while (ordering) {
@@ -127,6 +127,41 @@ public class UserInterface {
             }
         }
     }
+    private void addDrink(Order order) {
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Drink==");
+            System.out.println("1) Select Drink Size");
+            System.out.println("2) Select Drink Flavour");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    chooseDrinkSize(order);
+                    break;
+                case "2":
+                    chooseDrinkFlavor(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
+    }
+    private void chooseDrinkSize(Order order) {
+        System.out.println("Choose Drink Size");
+    }
+    private void chooseDrinkFlavor(Order order) {
+        System.out.println("Choose Drink Flavor");
+    }
+
     private void selectBread(Order order){
         System.out.println("Add bread flow");
 
@@ -149,18 +184,15 @@ public class UserInterface {
     private void toasted(Order order){
         System.out.println("Add toasted option");
     }
-    private void addDrinkFlow(Order order) {
-        System.out.println("Add Drink flow");
 
-    }
-
-    private void addChipsFlow(Order order) {
+    private void addChips(Order order) {
         System.out.println("Add Chips flow");
 
     }
 
-    private void checkoutFlow(Order order) {
+    private void checkout(Order order) {
         System.out.println("Checkout flow");
 
     }
+
 }
