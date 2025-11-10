@@ -79,13 +79,76 @@ public class UserInterface {
         }
     }
 
-
-
     private void addSandwichFlow(Order order) {
-        System.out.println("Add Sandwich flow");
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Sandwich==");
+            System.out.println("1) Select bread");
+            System.out.println("2) Select size");
+            System.out.println("3) Meat toppings (allow extras)");
+            System.out.println("4) Cheese toppings (allow extras)");
+            System.out.println("5) Other regular toppings");
+            System.out.println("6) Sauces");
+            System.out.println("7) Toasted?");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    selectBread(order);
+                    break;
+                case "2":
+                    selectSize(order);
+                    break;
+                case "3":
+                    meatTopping(order);
+                    break;
+                case "4":
+                    cheeseTopping(order);
+                    break;
+                case "5":
+                    otherTopping(order);
+                    break;
+                case "6":
+                    souces(order);
+                    break;
+                case "7":
+                    toasted(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
+    }
+    private void selectBread(Order order){
+        System.out.println("Add bread flow");
 
     }
-
+    private void selectSize(Order order){
+        System.out.println("Add size flow");
+    }
+    private void meatTopping(Order order){
+        System.out.println("Add meat topping flow");
+    }
+    private void cheeseTopping(Order order){
+        System.out.println("Add cheese topping flow");
+    }
+    private void otherTopping(Order order){
+        System.out.println("Add other topping flow");
+    }
+    private void souces(Order order){
+        System.out.println("Add souces flow");
+    }
+    private void toasted(Order order){
+        System.out.println("Add toasted option");
+    }
     private void addDrinkFlow(Order order) {
         System.out.println("Add Drink flow");
 
