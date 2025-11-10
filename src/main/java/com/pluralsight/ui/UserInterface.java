@@ -217,31 +217,265 @@ public class UserInterface {
     }
 
     private void selectBread(Order order){
-        System.out.println("Add bread flow");
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Breads==");
+            System.out.println("1) White:");
+            System.out.println("2) Wheat:");
+            System.out.println("3) Rye:");
+            System.out.println("4) Wrap:");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    //whiteBread(order);
+                    break;
+                case "2":
+                    //wheat(order);
+                    break;
+                case "3":
+                    //rye(order);
+                    break;
+                case "4":
+                    //wrap(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
 
     }
     private void selectSize(Order order){
         System.out.println("Add size flow");
     }
     private void meatTopping(Order order){
-        System.out.println("Add meat topping flow");
-    }
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Meats==");
+            System.out.println("1) Steak:");
+            System.out.println("2) Ham:");
+            System.out.println("3) Salami:");
+            System.out.println("4) Roast beef:");
+            System.out.println("5) Chicken:");
+            System.out.println("6) Bacon:");
+            System.out.println("7) Extra Meat:");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    //steak(order);
+                    break;
+                case "2":
+                    //ham(order);
+                    break;
+                case "3":
+                    //salami(order);
+                    break;
+                case "4":
+                    //roastBeef(order);
+                    break;
+                case "5":
+                    //chicken(order);
+                    break;
+                case "6":
+                    //bacon(order);
+                    break;
+                case "7":
+                    //extraMeat(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }    }
     private void cheeseTopping(Order order){
-        System.out.println("Add cheese topping flow");
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Cheese==");
+            System.out.println("1) American:");
+            System.out.println("2) Provolone:");
+            System.out.println("3) Cheddar:");
+            System.out.println("4) Swiss:");
+            System.out.println("5) Extra Cheese:");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    //american(order);
+                    break;
+                case "2":
+                    //provolone(order);
+                    break;
+                case "3":
+                    //cheddar(order);
+                    break;
+                case "4":
+                    //swiss(order);
+                    break;
+                case "5":
+                    //extraCheese(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
     }
     private void otherTopping(Order order){
-        System.out.println("Add other topping flow");
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Other Toppings==");
+            System.out.println("1) Lettuce:");
+            System.out.println("2) Peppers:");
+            System.out.println("3) Onions:");
+            System.out.println("4) Tomatoes:");
+            System.out.println("5) Jalapeños:");
+            System.out.println("6) Cucumbers:");
+            System.out.println("7) Pickles:");
+            System.out.println("8) Guacamole:");
+            System.out.println("9) Mushrooms:");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    //lettuce(order);
+                    break;
+                case "2":
+                    //peppers(order);
+                    break;
+                case "3":
+                    //onions(order);
+                    break;
+                case "4":
+                    //tomatoes(order);
+                    break;
+                case "5":
+                    //jalapeños(order);
+                    break;
+                case "6":
+                    //cucumbers(order);
+                    break;
+                case "7":
+                    //pickles(order);
+                    break;
+                case "8":
+                    //guacamole(order);
+                    break;
+                case "9":
+                    //mushrooms(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
     }
     private void sauces(Order order){
-        System.out.println("Add sauces flow");
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Sauces==");
+            System.out.println("1) mayo:");
+            System.out.println("2) mustard:");
+            System.out.println("3) ketchup:");
+            System.out.println("4) ranch:");
+            System.out.println("5) thousand islands:");
+            System.out.println("6) vinaigrette:");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    //mayo(order);
+                    break;
+                case "2":
+                    //mustard(order);
+                    break;
+                case "3":
+                    //ketchup(order);
+                    break;
+                case "4":
+                    //ranch(order);
+                    break;
+                case "5":
+                    //thousandIslands(order);
+                    break;
+                case "6":
+                    //vinaigrette(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
     }
     private void toasted(Order order){
         System.out.println("Add toasted option");
     }
 
     private void checkout(Order order) {
-        System.out.println("Checkout flow");
 
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Checkout==");
+            System.out.println("Display order details here");
+            System.out.println("1) Confirm");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    confirmOrder(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
+
+    }
+    private void confirmOrder(Order order){
+        System.out.println("Create Receipt");
     }
 
 }
