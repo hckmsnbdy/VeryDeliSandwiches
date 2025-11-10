@@ -84,13 +84,11 @@ public class UserInterface {
 
         while (ordering) {
             System.out.println("\n==Sandwich==");
-            System.out.println("1) Select bread");
-            System.out.println("2) Select size");
-            System.out.println("3) Meat toppings (allow extras)");
-            System.out.println("4) Cheese toppings (allow extras)");
-            System.out.println("5) Other regular toppings");
-            System.out.println("6) Sauces");
-            System.out.println("7) Toasted?");
+            System.out.println("1) Select your bread:");
+            System.out.println("2) Sandwich size:");
+            System.out.println("3) Toppings:");
+            System.out.println("4) Select Sauces:");
+            System.out.println("5) Would you like the sandwich toasted?");
             System.out.println("0) Cancel Order");
             System.out.print("Choose: ");
 
@@ -104,18 +102,9 @@ public class UserInterface {
                     selectSize(order);
                     break;
                 case "3":
-                    meatTopping(order);
+                    selectTopping(order);
                     break;
                 case "4":
-                    cheeseTopping(order);
-                    break;
-                case "5":
-                    otherTopping(order);
-                    break;
-                case "6":
-                    souces(order);
-                    break;
-                case "7":
                     toasted(order);
                     break;
                 case "0":
@@ -127,6 +116,42 @@ public class UserInterface {
             }
         }
     }
+    private void selectTopping(Order order){
+        boolean ordering = true;
+
+        while (ordering) {
+            System.out.println("\n==Toppings==");
+            System.out.println("1) Meat:");
+            System.out.println("2) Cheese:");
+            System.out.println("3) Other toppings");
+            System.out.println("0) Cancel Order");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    meatTopping(order);
+                    break;
+                case "2":
+                    cheeseTopping(order);
+                    break;
+                case "3":
+                    otherTopping(order);
+                    break;
+                case "4":
+                    sauces(order);
+                    break;
+                case "0":
+                    System.out.println("Order cancelled.");
+                    ordering = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
+    }
+
     private void addDrink(Order order) {
         boolean ordering = true;
 
@@ -179,6 +204,8 @@ public class UserInterface {
             }
         }
     }
+
+
     private void addChipType(Order order) {
         System.out.println("Add Chips");
     }
@@ -205,8 +232,8 @@ public class UserInterface {
     private void otherTopping(Order order){
         System.out.println("Add other topping flow");
     }
-    private void souces(Order order){
-        System.out.println("Add souces flow");
+    private void sauces(Order order){
+        System.out.println("Add sauces flow");
     }
     private void toasted(Order order){
         System.out.println("Add toasted option");
