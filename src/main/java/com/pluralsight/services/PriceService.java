@@ -5,52 +5,51 @@ import static com.pluralsight.models.SandwichSize.*;
 public class PriceService {
 
     public double priceOfBread(String size) {
-        if (FOUR_INCH.equals(size))   return 5.50;
-        if (EIGHT_INCH.equals(size))  return 7.00;
-        if (TWELVE_INCH.equals(size)) return 8.50;
-        return 0.0; // unknown size
+        switch (size) {
+            case "4":  return 4.50;
+            case "8":  return 6.50;
+            case "12": return 8.50;
+            default:   return 0.0;
+        }
     }
 
     public double priceOfMeat(String size) {
-        if (FOUR_INCH.equals(size))   return 1.00;
-        if (EIGHT_INCH.equals(size))  return 2.00;
-        if (TWELVE_INCH.equals(size)) return 3.00;
-        return 0.0;
+        switch (size) {
+            case "4":  return 1.00;
+            case "8":  return 1.75;
+            case "12": return 2.50;
+            default:   return 0.0;
+        }
     }
 
     public double priceOfCheese(String size) {
-        if (FOUR_INCH.equals(size))   return 0.75;
-        if (EIGHT_INCH.equals(size))  return 1.50;
-        if (TWELVE_INCH.equals(size)) return 2.25;
-        return 0.0;
+        switch (size) {
+            case "4":  return 0.75;
+            case "8":  return 1.25;
+            case "12": return 1.75;
+            default:   return 0.0;
+        }
     }
 
     public double extraMeat(String size) {
-        if (FOUR_INCH.equals(size))   return 0.50;
-        if (EIGHT_INCH.equals(size))  return 1.00;
-        if (TWELVE_INCH.equals(size)) return 1.50;
-        return 0.0;
+        return priceOfMeat(size) * 0.75;
     }
 
     public double extraCheese(String size) {
-        if (FOUR_INCH.equals(size))   return 0.30;
-        if (EIGHT_INCH.equals(size))  return 0.60;
-        if (TWELVE_INCH.equals(size)) return 0.90;
-        return 0.0;
+        return priceOfCheese(size) * 0.50; // +50% of base cheese price
+
     }
 
     public double drinkPrice(String size) {
-        if (size == null) return 0.0;
-        String s = size.trim().toLowerCase();
-        switch (s) {
-            case "small":  return 2.00;
-            case "medium": return 2.50;
-            case "large":  return 3.00;
-            default:       return 0.0; // unknown size
+        switch (size.toLowerCase()) {
+            case "small":  return 1.50;
+            case "medium": return 2.00;
+            case "large":  return 2.50;
+            default:       return 0.0;
         }
     }
 
     public double chipsPrice() {
-        return 1.50;
+        return 1.20;
     }
 }
