@@ -3,6 +3,10 @@ package com.pluralsight.ui;
 import com.pluralsight.models.Order;
 import com.pluralsight.services.PriceService;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -477,16 +481,60 @@ public class UserInterface {
             String input = scanner.nextLine();
 
             if ("1".equals(input)) {
-                // Receipt
-                System.out.println("Order confirmed. (Receipt????)");
+                confirmOrder(order, total);
             } else {
                 System.out.println("Checkout cancelled.");
             }
         }
 
     }
-    private void confirmOrder(Order order){
-        System.out.println("Create Receipt");
+
+    private void confirmOrder(Order order, double total) {
+        try {
+
+            DateTimeFormatter frmt = DateTimeFormatter.ofPattern("yyyyMMdd-hhmmss");
+            String fileName = "receipt-" + LocalDateTime.now().format(frmt) + ".txt";
+
+            FileWriter writer = new FileWriter(fileName);
+
+            writer.write("VERY DELI SANDWICHES\n");
+            writer.write("Time: " + LocalDateTime.now() + "\n\n");
+
+            writer.write("Sandwiches\n");
+            if (order.getSandwiches().isEmpty()) {
+                writer.write("None\n");
+            } else {
+                for (int i = 0; i < order.getSandwiches().size(); i++) {
+                    writer.write((i + 1) + ") " + order.getSandwiches().get(i).toString() + "\n");
+                }
+            }
+
+            writer.write("\nDrinks\n");
+            if (order.getDrinks().isEmpty()) {
+                writer.write("None\n");
+            } else {
+                for (int i = 0; i < order.getDrinks().size(); i++) {
+                    writer.write((i + 1) + ") " + order.getDrinks().get(i).toString() + "\n");
+                }
+            }
+
+            writer.write("\nChips\n");
+            if (order.getChips().isEmpty()) {
+                writer.write("None\n");
+            } else {
+                for (int i = 0; i < order.getChips().size(); i++) {
+                    writer.write((i + 1) + ") " + order.getChips().get(i).toString() + "\n");
+                }
+            }
+
+            writer.write(String.format("\nTOTAL: $%.2f\n", total));
+
+            writer.close();
+            System.out.println("Order confirmed. Receipt saved as: " + fileName);
+        } catch (IOException e) {
+            System.out.println("Failed to write receipt: " + e.getMessage());
+        }
     }
+
 
 }
