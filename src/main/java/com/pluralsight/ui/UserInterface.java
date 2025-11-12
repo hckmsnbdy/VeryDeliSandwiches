@@ -1,12 +1,14 @@
 package com.pluralsight.ui;
 
 import com.pluralsight.models.Order;
+import com.pluralsight.services.PriceService;
 
 import java.util.Scanner;
 
 public class UserInterface {
 
     private final Scanner scanner = new Scanner(System.in);
+    private final PriceService priceService = new PriceService();
 
     public static void main(String[] args) {
         UserInterface ui = new UserInterface();
@@ -105,6 +107,8 @@ public class UserInterface {
                     selectTopping(order);
                     break;
                 case "4":
+                    sauces(order);
+                case "5":
                     toasted(order);
                     break;
                 case "0":
@@ -120,10 +124,11 @@ public class UserInterface {
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Toppings==");
+            System.out.println("\nToppings");
             System.out.println("1) Meat:");
             System.out.println("2) Cheese:");
             System.out.println("3) Other toppings");
+            System.out.println("4) Sauces");
             System.out.println("0) Cancel Order");
             System.out.print("Choose: ");
 
@@ -156,7 +161,7 @@ public class UserInterface {
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Drink==");
+            System.out.println("\nDrink");
             System.out.println("1) Select Drink Size");
             System.out.println("2) Select Drink Flavour");
             System.out.println("0) Cancel Order");
@@ -184,7 +189,7 @@ public class UserInterface {
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Chips==");
+            System.out.println("\nChips");
             System.out.println("1) Add Chips");
             System.out.println("0) Cancel Order");
             System.out.print("Choose: ");
@@ -220,7 +225,7 @@ public class UserInterface {
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Breads==");
+            System.out.println("\nBreads");
             System.out.println("1) White:");
             System.out.println("2) Wheat:");
             System.out.println("3) Rye:");
@@ -260,7 +265,7 @@ public class UserInterface {
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Meats==");
+            System.out.println("\nMeats");
             System.out.println("1) Steak:");
             System.out.println("2) Ham:");
             System.out.println("3) Salami:");
@@ -307,7 +312,7 @@ public class UserInterface {
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Cheese==");
+            System.out.println("\nCheese");
             System.out.println("1) American:");
             System.out.println("2) Provolone:");
             System.out.println("3) Cheddar:");
@@ -347,7 +352,7 @@ public class UserInterface {
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Other Toppings==");
+            System.out.println("\nOther Toppings");
             System.out.println("1) Lettuce:");
             System.out.println("2) Peppers:");
             System.out.println("3) Onions:");
@@ -403,13 +408,13 @@ public class UserInterface {
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Sauces==");
-            System.out.println("1) mayo:");
-            System.out.println("2) mustard:");
-            System.out.println("3) ketchup:");
-            System.out.println("4) ranch:");
-            System.out.println("5) thousand islands:");
-            System.out.println("6) vinaigrette:");
+            System.out.println("\nSauces");
+            System.out.println("1) Mayo:");
+            System.out.println("2) Mustard:");
+            System.out.println("3) Ketchup:");
+            System.out.println("4) Ranch:");
+            System.out.println("5) Thousand Islands:");
+            System.out.println("6) Vinaigrette:");
             System.out.println("0) Cancel Order");
             System.out.print("Choose: ");
 
@@ -448,28 +453,34 @@ public class UserInterface {
     }
 
     private void checkout(Order order) {
+        if (order.getSandwiches().isEmpty() &&
+                order.getDrinks().isEmpty() &&
+                order.getChips().isEmpty()) {
+            System.out.println("\n==Checkout==");
+            System.out.println("Order is empty. Please add at least one item.");
+            return;
+        }
 
         boolean ordering = true;
 
         while (ordering) {
-            System.out.println("\n==Checkout==");
-            System.out.println("Display order details here");
+            System.out.println("\nCheckout");
+            System.out.println(order.toString());
+
+            double total = order.calculateTotal(priceService);
+            System.out.printf("TOTAL: $%.2f%n", total);
+
             System.out.println("1) Confirm");
             System.out.println("0) Cancel Order");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
 
-            switch (input) {
-                case "1":
-                    confirmOrder(order);
-                    break;
-                case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
-                    break;
-                default:
-                    System.out.println("Invalid selection.");
+            if ("1".equals(input)) {
+                // Receipt
+                System.out.println("Order confirmed. (Receipt????)");
+            } else {
+                System.out.println("Checkout cancelled.");
             }
         }
 
