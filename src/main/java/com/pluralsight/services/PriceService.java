@@ -1,41 +1,56 @@
 package com.pluralsight.services;
 
-// Holds only method signatures for pricing.
+import static com.pluralsight.models.SandwichSize.*;
+
 public class PriceService {
 
-    // Returns base bread price based on sandwich size (e.g., "4", "8", "12")
     public double priceOfBread(String size) {
-        return 0.0;
+        if (FOUR_INCH.equals(size))   return 5.50;
+        if (EIGHT_INCH.equals(size))  return 7.00;
+        if (TWELVE_INCH.equals(size)) return 8.50;
+        return 0.0; // unknown size
     }
 
-    // Returns base meat price for the given size
     public double priceOfMeat(String size) {
+        if (FOUR_INCH.equals(size))   return 1.00;
+        if (EIGHT_INCH.equals(size))  return 2.00;
+        if (TWELVE_INCH.equals(size)) return 3.00;
         return 0.0;
     }
 
-    // Returns base cheese price for the given size
     public double priceOfCheese(String size) {
+        if (FOUR_INCH.equals(size))   return 0.75;
+        if (EIGHT_INCH.equals(size))  return 1.50;
+        if (TWELVE_INCH.equals(size)) return 2.25;
         return 0.0;
     }
 
-    // Extra meat surcharge for the given size
     public double extraMeat(String size) {
+        if (FOUR_INCH.equals(size))   return 0.50;
+        if (EIGHT_INCH.equals(size))  return 1.00;
+        if (TWELVE_INCH.equals(size)) return 1.50;
         return 0.0;
     }
 
-    // Extra cheese surcharge for the given size
     public double extraCheese(String size) {
-
+        if (FOUR_INCH.equals(size))   return 0.30;
+        if (EIGHT_INCH.equals(size))  return 0.60;
+        if (TWELVE_INCH.equals(size)) return 0.90;
         return 0.0;
     }
 
-    // Drink price by size ("small", "medium", "large")
     public double drinkPrice(String size) {
-        return 0.0;
+        if (size == null) return 0.0;
+        String s = size.trim().toLowerCase();
+        switch (s) {
+            case "small":  return 2.00;
+            case "medium": return 2.50;
+            case "large":  return 3.00;
+            default:       return 0.0; // unknown size
+        }
     }
 
-    // Flat chips price (single size)
     public double chipsPrice() {
-        return 0.0;
+        return 1.50;
     }
 }
