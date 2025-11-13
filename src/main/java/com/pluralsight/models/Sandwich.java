@@ -68,32 +68,30 @@ public class Sandwich {
 
         total += priceService.priceOfBread(size);
 
-
         for (String t : toppings) {
             String x = t.toLowerCase().trim();
 
             if (x.contains("extra meat")) {
                 total += priceService.extraMeat(size);
-                continue;
-            }
-            if (x.contains("extra cheese")) {
+            } else if (x.contains("extra cheese")) {
                 total += priceService.extraCheese(size);
-                continue;
             }
-
-            if (isMeat(x)) {
+            else if (x.startsWith("meat:")) {
                 total += priceService.priceOfMeat(size);
-                continue;
             }
-            if (isCheese(x)) {
+            else if (x.startsWith("cheese:")) {
                 total += priceService.priceOfCheese(size);
-                continue;
             }
-
+            else if (x.startsWith("sauce:")) {
+            }
+            else {
+                total += 0.25;
+            }
         }
 
         return total;
     }
+
 
     private boolean isMeat(String x) {
         return x.equals("steak") ||
