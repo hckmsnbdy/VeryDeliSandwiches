@@ -1,7 +1,9 @@
 package com.pluralsight.ui;
 
+import com.pluralsight.models.Drink;
 import com.pluralsight.models.Order;
 import com.pluralsight.services.PriceService;
+
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,6 +15,9 @@ public class UserInterface {
 
     private final Scanner scanner = new Scanner(System.in);
     private final PriceService priceService = new PriceService();
+    private String pendingDrinkSize;
+    private String pendingDrinkFlavor;
+
 
     public static void main(String[] args) {
         UserInterface ui = new UserInterface();
@@ -168,7 +173,7 @@ public class UserInterface {
             System.out.println("\nDrink");
             System.out.println("1) Select Drink Size");
             System.out.println("2) Select Drink Flavour");
-            System.out.println("0) Cancel Order");
+            System.out.println("0) Back");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -181,11 +186,21 @@ public class UserInterface {
                     chooseDrinkFlavor(order);
                     break;
                 case "0":
-                    System.out.println("Order cancelled.");
                     ordering = false;
                     break;
                 default:
                     System.out.println("Invalid selection.");
+            }
+            if (pendingDrinkSize != null && pendingDrinkFlavor != null) {
+                Drink d = new Drink(pendingDrinkSize, pendingDrinkFlavor);
+                order.addDrink(d);
+
+                System.out.println("Added drink: " + d.toString());
+
+                pendingDrinkSize = null;
+                pendingDrinkFlavor = null;
+
+                ordering = false;
             }
         }
     }
@@ -219,10 +234,40 @@ public class UserInterface {
         System.out.println("Add Chips");
     }
     private void chooseDrinkSize(Order order) {
-        System.out.println("Choose Drink Size");
+        System.out.println("\nSelect size: 1) Small  2) Medium  3) Large");
+        System.out.print("Choose: ");
+        String input = scanner.nextLine();
+
+        if ("1".equals(input)) {
+            pendingDrinkSize = "small";
+        } else if ("2".equals(input)) {
+            pendingDrinkSize = "medium";
+        } else if ("3".equals(input)) {
+            pendingDrinkSize = "large";
+        } else {
+            System.out.println("Invalid size.");
+            return;
+        }
+
+        System.out.println("Size selected: " + pendingDrinkSize);
     }
     private void chooseDrinkFlavor(Order order) {
-        System.out.println("Choose Drink Flavor");
+        System.out.println("\nSelect flavor: 1) Cola  2) Orange  3) Lemonade");
+        System.out.print("Choose: ");
+        String input = scanner.nextLine();
+
+        if ("1".equals(input)) {
+            pendingDrinkFlavor = "cola";
+        } else if ("2".equals(input)) {
+            pendingDrinkFlavor = "orange";
+        } else if ("3".equals(input)) {
+            pendingDrinkFlavor = "lemonade";
+        } else {
+            System.out.println("Invalid flavor.");
+            return;
+        }
+
+        System.out.println("Flavor selected: " + pendingDrinkFlavor);
     }
 
     private void selectBread(Order order){
