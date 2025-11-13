@@ -589,37 +589,79 @@ public class UserInterface {
 
 
     private void checkout(Order order) {
-        if (order.getSandwiches().isEmpty() &&
-                order.getDrinks().isEmpty() &&
-                order.getChips().isEmpty()) {
-            System.out.println("\nCheckout");
-            System.out.println("Order is empty. Please add at least one item.");
+        if (order.getSandwiches().isEmpty()
+                && order.getDrinks().isEmpty()
+                && order.getChips().isEmpty()) {
+            System.out.println("\nCHECKOUT");
+            System.out.println("Order is empty. Please add at least one item before checkout.");
             return;
         }
 
-        boolean ordering = true;
+        PriceService priceService = new PriceService();
+        boolean checkingOut = true;
 
-        while (ordering) {
-            System.out.println("\nCheckout");
-            System.out.println(order.toString());
+        while (checkingOut) {
+            System.out.println("\nCHECKOUT");
 
+            // Show Sandwiches
+            System.out.println("\nSandwiches:");
+            if (order.getSandwiches().isEmpty()) {
+                System.out.println("- None");
+            } else {
+                for (int i = 0; i < order.getSandwiches().size(); i++) {
+                    System.out.println("- " + order.getSandwiches().get(i));
+                }
+            }
+
+            // Show Drinks
+            System.out.println("\nDrinks:");
+            if (order.getDrinks().isEmpty()) {
+                System.out.println("- None");
+            } else {
+                for (int i = 0; i < order.getDrinks().size(); i++) {
+                    System.out.println("- " + order.getDrinks().get(i));
+                }
+            }
+
+            // Show Chips
+            System.out.println("\nChips:");
+            if (order.getChips().isEmpty()) {
+                System.out.println("- None");
+            } else {
+                for (int i = 0; i < order.getChips().size(); i++) {
+                    System.out.println("- " + order.getChips().get(i));
+                }
+            }
+
+            // Calculate and show total
             double total = order.calculateTotal(priceService);
-            System.out.printf("TOTAL: $%.2f%n", total);
+            System.out.printf("\nTotal Price: $%.2f\n", total);
 
-            System.out.println("1) Confirm");
-            System.out.println("0) Cancel Order");
+            System.out.println("\n1) Confirm Order");
+            System.out.println("0) Cancel");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
 
-            if ("1".equals(input)) {
-                confirmOrder(order, total);
-            } else {
-                System.out.println("Checkout cancelled.");
+            switch (input) {
+                case "1":
+                    // confirm and write receipt
+                    confirmOrder(order, total);
+                    checkingOut = false;
+                    break;
+
+                case "0":
+                    System.out.println("Checkout cancelled.");
+                    checkingOut = false;
+                    break;
+
+                default:
+                    System.out.println("Invalid selection.");
+                    break;
             }
         }
-
     }
+
 
     private void confirmOrder(Order order, double total) {
         try {
