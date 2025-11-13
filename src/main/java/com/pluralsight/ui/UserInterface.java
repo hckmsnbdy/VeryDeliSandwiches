@@ -3,6 +3,12 @@ package com.pluralsight.ui;
 import com.pluralsight.models.Drink;
 import com.pluralsight.models.Order;
 import com.pluralsight.services.PriceService;
+import com.pluralsight.models.Sandwich;
+import com.pluralsight.models.Drink;
+import com.pluralsight.models.Chips;
+import com.pluralsight.models.BreadType;
+import com.pluralsight.models.SandwichSize;
+
 
 
 import java.io.FileWriter;
@@ -91,80 +97,88 @@ public class UserInterface {
     }
 
     private void addSandwich(Order order) {
-        boolean ordering = true;
+        // Start with a default sandwich and let the user customize it
+        Sandwich sandwich = new Sandwich();
 
-        while (ordering) {
-            System.out.println("\n==Sandwich==");
-            System.out.println("1) Select your bread:");
-            System.out.println("2) Sandwich size:");
-            System.out.println("3) Toppings:");
-            System.out.println("4) Select Sauces:");
-            System.out.println("5) Would you like the sandwich toasted?");
-            System.out.println("0) Cancel Order");
-            System.out.print("Choose: ");
+        boolean editing = true;
 
-            String input = scanner.nextLine();
-
-            switch (input) {
-                case "1":
-                    selectBread(order);
-                    break;
-                case "2":
-                    selectSize(order);
-                    break;
-                case "3":
-                    selectTopping(order);
-                    break;
-                case "4":
-                    sauces(order);
-                case "5":
-                    toasted(order);
-                    break;
-                case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
-                    break;
-                default:
-                    System.out.println("Invalid selection.");
-            }
-        }
-    }
-    private void selectTopping(Order order){
-        boolean ordering = true;
-
-        while (ordering) {
-            System.out.println("\nToppings");
-            System.out.println("1) Meat:");
-            System.out.println("2) Cheese:");
-            System.out.println("3) Other toppings");
+        while (editing) {
+            System.out.println("\nSandwich Builder");
+            System.out.println("Current: " + sandwich.toString());
+            System.out.println("1) Select bread");
+            System.out.println("2) Select size");
+            System.out.println("3) Toppings");
             System.out.println("4) Sauces");
-            System.out.println("0) Cancel Order");
+            System.out.println("5) Toasted?");
+            System.out.println("9) Add sandwich to order");
+            System.out.println("0) Cancel");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
 
             switch (input) {
                 case "1":
-                    meatTopping(order);
+                    selectBread(sandwich);
                     break;
                 case "2":
-                    cheeseTopping(order);
+                    selectSize(sandwich);
                     break;
                 case "3":
-                    otherTopping(order);
+                    selectTopping(sandwich);
                     break;
                 case "4":
-                    sauces(order);
+                    sauces(sandwich);
+                    break;
+                case "5":
+                    toasted(sandwich);
+                    break;
+                case "9":
+                    order.addSandwich(sandwich);
+                    System.out.println("Sandwich added to order.");
+                    editing = false;
                     break;
                 case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
+                    System.out.println("Sandwich cancelled.");
+                    editing = false;
                     break;
                 default:
                     System.out.println("Invalid selection.");
             }
         }
     }
+
+    private void selectTopping(Sandwich sandwich) {
+        boolean choosing = true;
+
+        while (choosing) {
+            System.out.println("\nToppings");
+            System.out.println("1) Meat");
+            System.out.println("2) Cheese");
+            System.out.println("3) Other toppings");
+            System.out.println("0) Back");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    meatTopping(sandwich);
+                    break;
+                case "2":
+                    cheeseTopping(sandwich);
+                    break;
+                case "3":
+                    otherTopping(sandwich);
+                    break;
+                case "0":
+                    choosing = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
+    }
+
 
     private void addDrink(Order order) {
         boolean ordering = true;
@@ -270,242 +284,315 @@ public class UserInterface {
         System.out.println("Flavor selected: " + pendingDrinkFlavor);
     }
 
-    private void selectBread(Order order){
-        boolean ordering = true;
+    private void selectBread(Sandwich sandwich) {
+        boolean choosing = true;
 
-        while (ordering) {
-            System.out.println("\nBreads");
-            System.out.println("1) White:");
-            System.out.println("2) Wheat:");
-            System.out.println("3) Rye:");
-            System.out.println("4) Wrap:");
-            System.out.println("0) Cancel Order");
+        while (choosing) {
+            System.out.println("\nBreads ");
+            System.out.println("1) White");
+            System.out.println("2) Wheat");
+            System.out.println("3) Rye");
+            System.out.println("4) Wrap");
+            System.out.println("0) Back");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
 
             switch (input) {
                 case "1":
-                    //whiteBread(order);
+                    sandwich.setBread(BreadType.WHITE);
+                    System.out.println("Bread set to White.");
+                    choosing = false;
                     break;
                 case "2":
-                    //wheat(order);
+                    sandwich.setBread(BreadType.WHEAT);
+                    System.out.println("Bread set to Wheat.");
+                    choosing = false;
                     break;
                 case "3":
-                    //rye(order);
+                    sandwich.setBread(BreadType.RYE);
+                    System.out.println("Bread set to Rye.");
+                    choosing = false;
                     break;
                 case "4":
-                    //wrap(order);
+                    sandwich.setBread(BreadType.WRAP);
+                    System.out.println("Bread set to Wrap.");
+                    choosing = false;
                     break;
                 case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
+                    choosing = false;
                     break;
                 default:
                     System.out.println("Invalid selection.");
             }
         }
-
     }
-    private void selectSize(Order order){
-        System.out.println("Add size flow");
-    }
-    private void meatTopping(Order order){
-        boolean ordering = true;
 
-        while (ordering) {
+    private void selectSize(Sandwich sandwich) {
+        boolean choosing = true;
+
+        while (choosing) {
+            System.out.println("\nSize");
+            System.out.println("1) 4 inch");
+            System.out.println("2) 8 inch");
+            System.out.println("3) 12 inch");
+            System.out.println("0) Back");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    sandwich.setSize(SandwichSize.FOUR_INCH);
+                    System.out.println("Size set to 4 inch.");
+                    choosing = false;
+                    break;
+                case "2":
+                    sandwich.setSize(SandwichSize.EIGHT_INCH);
+                    System.out.println("Size set to 8 inch.");
+                    choosing = false;
+                    break;
+                case "3":
+                    sandwich.setSize(SandwichSize.TWELVE_INCH);
+                    System.out.println("Size set to 12 inch.");
+                    choosing = false;
+                    break;
+                case "0":
+                    choosing = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection.");
+            }
+        }
+    }
+
+    private void meatTopping(Sandwich sandwich) {
+        boolean choosing = true;
+
+        while (choosing) {
             System.out.println("\nMeats");
-            System.out.println("1) Steak:");
-            System.out.println("2) Ham:");
-            System.out.println("3) Salami:");
-            System.out.println("4) Roast beef:");
-            System.out.println("5) Chicken:");
-            System.out.println("6) Bacon:");
-            System.out.println("7) Extra Meat:");
-            System.out.println("0) Cancel Order");
+            System.out.println("1) Steak");
+            System.out.println("2) Ham");
+            System.out.println("3) Salami");
+            System.out.println("4) Roast beef");
+            System.out.println("5) Chicken");
+            System.out.println("6) Bacon");
+            System.out.println("7) Extra Meat");
+            System.out.println("0) Back");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
 
             switch (input) {
                 case "1":
-                    //steak(order);
+                    sandwich.addTopping("Meat: Steak");
                     break;
                 case "2":
-                    //ham(order);
+                    sandwich.addTopping("Meat: Ham");
                     break;
                 case "3":
-                    //salami(order);
+                    sandwich.addTopping("Meat: Salami");
                     break;
                 case "4":
-                    //roastBeef(order);
+                    sandwich.addTopping("Meat: Roast beef");
                     break;
                 case "5":
-                    //chicken(order);
+                    sandwich.addTopping("Meat: Chicken");
                     break;
                 case "6":
-                    //bacon(order);
+                    sandwich.addTopping("Meat: Bacon");
                     break;
                 case "7":
-                    //extraMeat(order);
+                    sandwich.addTopping("Extra Meat");
                     break;
                 case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
-                    break;
+                    choosing = false;
+                    continue;
                 default:
                     System.out.println("Invalid selection.");
+                    continue;
             }
-        }    }
-    private void cheeseTopping(Order order){
-        boolean ordering = true;
 
-        while (ordering) {
-            System.out.println("\nCheese");
-            System.out.println("1) American:");
-            System.out.println("2) Provolone:");
-            System.out.println("3) Cheddar:");
-            System.out.println("4) Swiss:");
-            System.out.println("5) Extra Cheese:");
-            System.out.println("0) Cancel Order");
-            System.out.print("Choose: ");
-
-            String input = scanner.nextLine();
-
-            switch (input) {
-                case "1":
-                    //american(order);
-                    break;
-                case "2":
-                    //provolone(order);
-                    break;
-                case "3":
-                    //cheddar(order);
-                    break;
-                case "4":
-                    //swiss(order);
-                    break;
-                case "5":
-                    //extraCheese(order);
-                    break;
-                case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
-                    break;
-                default:
-                    System.out.println("Invalid selection.");
-            }
+            System.out.println("Meat topping added.");
         }
     }
-    private void otherTopping(Order order){
-        boolean ordering = true;
 
-        while (ordering) {
-            System.out.println("\nOther Toppings");
-            System.out.println("1) Lettuce:");
-            System.out.println("2) Peppers:");
-            System.out.println("3) Onions:");
-            System.out.println("4) Tomatoes:");
-            System.out.println("5) Jalapeños:");
-            System.out.println("6) Cucumbers:");
-            System.out.println("7) Pickles:");
-            System.out.println("8) Guacamole:");
-            System.out.println("9) Mushrooms:");
-            System.out.println("0) Cancel Order");
+    private void cheeseTopping(Sandwich sandwich) {
+        boolean choosing = true;
+
+        while (choosing) {
+            System.out.println("\nCheese");
+            System.out.println("1) American");
+            System.out.println("2) Provolone");
+            System.out.println("3) Cheddar");
+            System.out.println("4) Swiss");
+            System.out.println("5) Extra Cheese");
+            System.out.println("0) Back");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
 
             switch (input) {
                 case "1":
-                    //lettuce(order);
+                    sandwich.addTopping("Cheese: American");
                     break;
                 case "2":
-                    //peppers(order);
+                    sandwich.addTopping("Cheese: Provolone");
                     break;
                 case "3":
-                    //onions(order);
+                    sandwich.addTopping("Cheese: Cheddar");
                     break;
                 case "4":
-                    //tomatoes(order);
+                    sandwich.addTopping("Cheese: Swiss");
                     break;
                 case "5":
-                    //jalapeños(order);
+                    sandwich.addTopping("Extra Cheese");
+                    break;
+                case "0":
+                    choosing = false;
+                    continue;
+                default:
+                    System.out.println("Invalid selection.");
+                    continue;
+            }
+
+            System.out.println("Cheese topping added.");
+        }
+    }
+
+    private void otherTopping(Sandwich sandwich) {
+        boolean choosing = true;
+
+        while (choosing) {
+            System.out.println("\nOther Toppings");
+            System.out.println("1) Lettuce");
+            System.out.println("2) Peppers");
+            System.out.println("3) Onions");
+            System.out.println("4) Tomatoes");
+            System.out.println("5) Jalapeños");
+            System.out.println("6) Cucumbers");
+            System.out.println("7) Pickles");
+            System.out.println("8) Guacamole");
+            System.out.println("9) Mushrooms");
+            System.out.println("0) Back");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    sandwich.addTopping("Lettuce");
+                    break;
+                case "2":
+                    sandwich.addTopping("Peppers");
+                    break;
+                case "3":
+                    sandwich.addTopping("Onions");
+                    break;
+                case "4":
+                    sandwich.addTopping("Tomatoes");
+                    break;
+                case "5":
+                    sandwich.addTopping("Jalapeños");
                     break;
                 case "6":
-                    //cucumbers(order);
+                    sandwich.addTopping("Cucumbers");
                     break;
                 case "7":
-                    //pickles(order);
+                    sandwich.addTopping("Pickles");
                     break;
                 case "8":
-                    //guacamole(order);
+                    sandwich.addTopping("Guacamole");
                     break;
                 case "9":
-                    //mushrooms(order);
+                    sandwich.addTopping("Mushrooms");
                     break;
                 case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
-                    break;
+                    choosing = false;
+                    continue;
                 default:
                     System.out.println("Invalid selection.");
+                    continue;
             }
+
+            System.out.println("Topping added.");
         }
     }
-    private void sauces(Order order){
-        boolean ordering = true;
 
-        while (ordering) {
+    private void sauces(Sandwich sandwich) {
+        boolean choosing = true;
+
+        while (choosing) {
             System.out.println("\nSauces");
-            System.out.println("1) Mayo:");
-            System.out.println("2) Mustard:");
-            System.out.println("3) Ketchup:");
-            System.out.println("4) Ranch:");
-            System.out.println("5) Thousand Islands:");
-            System.out.println("6) Vinaigrette:");
-            System.out.println("0) Cancel Order");
+            System.out.println("1) Mayo");
+            System.out.println("2) Mustard");
+            System.out.println("3) Ketchup");
+            System.out.println("4) Ranch");
+            System.out.println("5) Thousand Islands");
+            System.out.println("6) Vinaigrette");
+            System.out.println("0) Back");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
 
             switch (input) {
                 case "1":
-                    //mayo(order);
+                    sandwich.addTopping("Sauce: Mayo");
                     break;
                 case "2":
-                    //mustard(order);
+                    sandwich.addTopping("Sauce: Mustard");
                     break;
                 case "3":
-                    //ketchup(order);
+                    sandwich.addTopping("Sauce: Ketchup");
                     break;
                 case "4":
-                    //ranch(order);
+                    sandwich.addTopping("Sauce: Ranch");
                     break;
                 case "5":
-                    //thousandIslands(order);
+                    sandwich.addTopping("Sauce: Thousand Islands");
                     break;
                 case "6":
-                    //vinaigrette(order);
+                    sandwich.addTopping("Sauce: Vinaigrette");
                     break;
                 case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
-                    break;
+                    choosing = false; continue;
                 default:
                     System.out.println("Invalid selection.");
+                    continue;
             }
+
+            System.out.println("Sauce added.");
         }
     }
-    private void toasted(Order order){
-        System.out.println("Add toasted option");
+
+    private void toasted(Sandwich sandwich) {
+        System.out.println("\nToasted?");
+        System.out.println("1) Yes");
+        System.out.println("2) No");
+        System.out.print("Choose: ");
+
+        String input = scanner.nextLine();
+
+        switch (input) {
+            case "1":
+                sandwich.setToasted(true);
+                System.out.println("Sandwich set to toasted.");
+                break;
+            case "2":
+                sandwich.setToasted(false);
+                System.out.println("Sandwich set to not toasted.");
+                break;
+            default:
+                System.out.println("Invalid selection.");
+        }
     }
+
 
     private void checkout(Order order) {
         if (order.getSandwiches().isEmpty() &&
                 order.getDrinks().isEmpty() &&
                 order.getChips().isEmpty()) {
-            System.out.println("\n==Checkout==");
+            System.out.println("\nCheckout");
             System.out.println("Order is empty. Please add at least one item.");
             return;
         }
