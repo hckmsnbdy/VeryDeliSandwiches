@@ -2,6 +2,8 @@ package com.pluralsight.ui;
 
 import com.pluralsight.models.Drink;
 import com.pluralsight.models.Order;
+import com.pluralsight.services.ConsolePrinter;
+import com.pluralsight.services.InterfacePrint;
 import com.pluralsight.services.PriceService;
 import com.pluralsight.models.Sandwich;
 import com.pluralsight.models.Drink;
@@ -28,6 +30,9 @@ public class UserInterface {
 
 
     public static void main(String[] args) {
+        InterfacePrint printer = new ConsolePrinter();
+        printer.printMessage("Starting Very Deli Sandwiches...");
+
         UserInterface ui = new UserInterface();
         ui.start();
     }
