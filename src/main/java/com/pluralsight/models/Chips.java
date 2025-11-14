@@ -21,7 +21,7 @@ public class Chips {
 
     @Override
     public String toString() {
-        return "Chips{type='" + type + "'}";
+        return type;
     }
 }
 

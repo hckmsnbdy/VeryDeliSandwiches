@@ -82,7 +82,7 @@ public class UserInterface {
                     addDrink(order);
                     break;
                 case "3":
-                    addChipsFlow(order);
+                    addChipType(order);
                     break;
                 case "4":
                     checkout(order);
@@ -105,18 +105,16 @@ public class UserInterface {
         boolean editing = true;
 
         while (editing) {
-            System.out.println("\nSandwich Builder");
-            printCurrentSandwich(sandwich);
-            System.out.println();
+            printCurrentSandwich(sandwich, order);
+
             System.out.println("1) Select bread");
             System.out.println("2) Select size");
             System.out.println("3) Toppings");
             System.out.println("4) Sauces");
-            System.out.println("5) Toasted?");
-            System.out.println("9) Save sandwich and return to order menu");
+            System.out.println("5) Toasted");
+            System.out.println("6) Save sandwich and return to order menu");
             System.out.println("0) Discard sandwich and return to order menu");
             System.out.print("Choose: ");
-
             String input = scanner.nextLine();
 
             switch (input) {
@@ -135,7 +133,7 @@ public class UserInterface {
                 case "5":
                     toasted(sandwich);
                     break;
-                case "9":
+                case "6":
                     order.addSandwich(sandwich);
                     System.out.println("Sandwich added to order.");
                     editing = false;
@@ -170,11 +168,49 @@ public class UserInterface {
             }
         }
     }
-    // Prints current sandwich
-    private void printCurrentSandwich(Sandwich sandwich) {
-        System.out.println("\nCurrent sandwich:");
-        System.out.print(formatSandwichForOutput(sandwich));
+    // Prints current sandwich details and price information.
+    private void printCurrentSandwich(Sandwich sandwich, Order order) {
+        PriceService priceService = new PriceService();
+
+        double sandwichPrice = sandwich.calculatePrice(priceService);
+        double currentOrderTotal = order.calculateTotal(priceService);
+        double projectedTotal = currentOrderTotal + sandwichPrice;
+
+        List<String> meats = new ArrayList<>();
+        List<String> cheeses = new ArrayList<>();
+        List<String> others = new ArrayList<>();
+        List<String> sauces = new ArrayList<>();
+
+        for (String t : sandwich.getToppings()) {
+            if (t.startsWith("Meat: ")) {
+                meats.add(t.substring("Meat: ".length()));
+            } else if (t.startsWith("Cheese: ")) {
+                cheeses.add(t.substring("Cheese: ".length()));
+            } else if (t.startsWith("Sauce: ")) {
+                sauces.add(t.substring("Sauce: ".length()));
+            } else {
+                others.add(t);
+            }
+        }
+        addSpacing();
+        System.out.println();
+        System.out.println("Sandwich Builder");
+        System.out.println();
+        System.out.println("Current sandwich:");
+        System.out.println("  Size: " + sandwich.getSize() + " inch");
+        System.out.println("  Bread: " + sandwich.getBread());
+        System.out.println("  Toasted: " + (sandwich.isToasted() ? "yes" : "no"));
+        System.out.println("  Meats: " + (meats.isEmpty() ? "none" : String.join(", ", meats)));
+        System.out.println("  Cheeses: " + (cheeses.isEmpty() ? "none" : String.join(", ", cheeses)));
+        System.out.println("  Other toppings: " + (others.isEmpty() ? "none" : String.join(", ", others)));
+        System.out.println("  Sauces: " + (sauces.isEmpty() ? "none" : String.join(", ", sauces)));
+
+        System.out.printf("  Sandwich price: $%.2f%n", sandwichPrice);
+        System.out.printf("  Current order total (without this sandwich): $%.2f%n", currentOrderTotal);
+        System.out.printf("  Projected total with this sandwich: $%.2f%n", projectedTotal);
+        System.out.println();
     }
+
 
     private String formatSandwichForOutput(Sandwich sandwich) {
         List<String> meats = new ArrayList<>();
@@ -266,11 +302,12 @@ public class UserInterface {
                 default:
                     System.out.println("Invalid selection.");
             }
+
             if (pendingDrinkSize != null && pendingDrinkFlavor != null) {
                 Drink d = new Drink(pendingDrinkSize, pendingDrinkFlavor);
                 order.addDrink(d);
 
-                System.out.println("Added drink: " + d.toString());
+                System.out.println("Added drink: " + d.getSize() + " " + d.getFlavor());
 
                 pendingDrinkSize = null;
                 pendingDrinkFlavor = null;
@@ -279,77 +316,103 @@ public class UserInterface {
             }
         }
     }
-    private void addChipsFlow(Order order) {
+
+
+    private void addChipType(Order order) {
+
+        PriceService price = new PriceService();   // to show prices
+
         boolean choosing = true;
 
         while (choosing) {
-            System.out.println("\nChips");
-            System.out.println("1) Add chips");
+            System.out.println();
+            System.out.println("Choose Chip Type");
+            System.out.println("1) Classic        - $" + price.chipsPrice());
+            System.out.println("2) BBQ            - $" + price.chipsPrice());
+            System.out.println("3) Sour Cream     - $" + price.chipsPrice());
+            System.out.println("4) Salt & Vinegar - $" + price.chipsPrice());
+            System.out.println("5) Jalapeño       - $" + price.chipsPrice());
             System.out.println("0) Back to order menu");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
+            String type;
 
             switch (input) {
-                case "1":
-                    addChipType(order);
-                    break;
-
+                case "1": type = "Classic"; break;
+                case "2": type = "BBQ"; break;
+                case "3": type = "Sour Cream"; break;
+                case "4": type = "Salt & Vinegar"; break;
+                case "5": type = "Jalapeño"; break;
                 case "0":
                     System.out.println("Returning to order menu.");
-                    choosing = false;
-                    break;
-
+                    return;
                 default:
                     System.out.println("Invalid selection.");
-                    break;
+                    continue;
             }
+
+            Chips chips = new Chips(type);
+            order.addChips(chips);
+
+            System.out.println("Added chips: " + type + " ($" + price.chipsPrice() + ")");
+            choosing = false;
         }
     }
 
 
-    private void addChipType(Order order) {
-        System.out.print("Enter chip type (e.g. Classic, BBQ, Sour Cream): ");
-        String type = scanner.nextLine();
-
-        Chips chips = new Chips(type);
-        order.addChips(chips);
-
-        System.out.println("Added chips: " + chips.toString());
-    }
 
     private void chooseDrinkSize(Order order) {
-        System.out.println("\nSelect size: 1) Small  2) Medium  3) Large");
+        PriceService price = new PriceService();
+
+        System.out.println();
+        System.out.println("Select size: ");
+        System.out.println("1) Small  - $" + price.drinkPrice("small"));
+        System.out.println("2) Medium - $" + price.drinkPrice("medium"));
+        System.out.println("3) Large  - $" + price.drinkPrice("large"));
         System.out.print("Choose: ");
+
         String input = scanner.nextLine();
 
-        if ("1".equals(input)) {
-            pendingDrinkSize = "small";
-        } else if ("2".equals(input)) {
-            pendingDrinkSize = "medium";
-        } else if ("3".equals(input)) {
-            pendingDrinkSize = "large";
-        } else {
-            System.out.println("Invalid size.");
-            return;
+        switch (input) {
+            case "1":
+                pendingDrinkSize = "small";
+                System.out.println("Size selected: small");
+                break;
+            case "2":
+                pendingDrinkSize = "medium";
+                System.out.println("Size selected: medium");
+                break;
+            case "3":
+                pendingDrinkSize = "large";
+                System.out.println("Size selected: large");
+                break;
+            default:
+                System.out.println("Invalid selection.");
+                pendingDrinkSize = null;
         }
-
-        System.out.println("Size selected: " + pendingDrinkSize);
     }
+
     private void chooseDrinkFlavor(Order order) {
-        System.out.println("\nSelect flavor: 1) Cola  2) Orange  3) Lemonade");
+        System.out.println();
+        System.out.println("Select flavor: 1) Cola  2) Orange  3) Lemonade");
         System.out.print("Choose: ");
         String input = scanner.nextLine();
 
-        if ("1".equals(input)) {
-            pendingDrinkFlavor = "cola";
-        } else if ("2".equals(input)) {
-            pendingDrinkFlavor = "orange";
-        } else if ("3".equals(input)) {
-            pendingDrinkFlavor = "lemonade";
-        } else {
-            System.out.println("Invalid flavor.");
-            return;
+        switch (input) {
+            case "1":
+                pendingDrinkFlavor = "cola";
+                break;
+            case "2":
+                pendingDrinkFlavor = "orange";
+                break;
+            case "3":
+                pendingDrinkFlavor = "lemonade";
+                break;
+            default:
+                System.out.println("Invalid flavor choice.");
+                pendingDrinkFlavor = null;
+                return;
         }
 
         System.out.println("Flavor selected: " + pendingDrinkFlavor);
@@ -400,13 +463,15 @@ public class UserInterface {
     }
 
     private void selectSize(Sandwich sandwich) {
+        PriceService priceService = new PriceService();
+
         boolean choosing = true;
 
         while (choosing) {
             System.out.println("\nSize");
-            System.out.println("1) 4 inch");
-            System.out.println("2) 8 inch");
-            System.out.println("3) 12 inch");
+            System.out.println("1) 4 inch  - $" + priceService.priceOfBread(SandwichSize.FOUR_INCH));
+            System.out.println("2) 8 inch  - $" + priceService.priceOfBread(SandwichSize.EIGHT_INCH));
+            System.out.println("3) 12 inch - $" + priceService.priceOfBread(SandwichSize.TWELVE_INCH));
             System.out.println("0) Back");
             System.out.print("Choose: ");
 
@@ -660,146 +725,254 @@ public class UserInterface {
 
 
     private void checkout(Order order) {
-        if (order.getSandwiches().isEmpty()
-                && order.getDrinks().isEmpty()
-                && order.getChips().isEmpty()) {
-            System.out.println("\nCHECKOUT");
-            System.out.println("Order is empty. Please add at least one item before checkout.");
-            return;
+        PriceService priceService = new PriceService();
+
+        double sandwichesTotal = 0.0;
+        double drinksTotal = 0.0;
+        double chipsTotal = 0.0;
+
+        System.out.println();
+        System.out.println("CHECKOUT");
+        System.out.println();
+
+        // Sandwiches
+        System.out.println("Sandwiches:");
+        if (order.getSandwiches().isEmpty()) {
+            System.out.println("  None");
+        } else {
+            int index = 1;
+            for (Sandwich s : order.getSandwiches()) {
+
+                double sandwichPrice = s.calculatePrice(priceService);
+                sandwichesTotal += sandwichPrice;
+
+                // group toppings same style as builder
+                List<String> meats = new ArrayList<>();
+                List<String> cheeses = new ArrayList<>();
+                List<String> others = new ArrayList<>();
+                List<String> sauces = new ArrayList<>();
+
+                for (String t : s.getToppings()) {
+                    if (t.startsWith("Meat: ")) {
+                        meats.add(t.substring("Meat: ".length()));
+                    } else if (t.startsWith("Cheese: ")) {
+                        cheeses.add(t.substring("Cheese: ".length()));
+                    } else if (t.startsWith("Sauce: ")) {
+                        sauces.add(t.substring("Sauce: ".length()));
+                    } else {
+                        others.add(t);
+                    }
+                }
+
+                System.out.printf("Sandwich #%d - $%.2f%n", index, sandwichPrice);
+                System.out.println("  Size: " + s.getSize() + " inch");
+                System.out.println("  Bread: " + s.getBread());
+                System.out.println("  Toasted: " + (s.isToasted() ? "yes" : "no"));
+                System.out.println("  Meats: " + (meats.isEmpty() ? "none" : String.join(", ", meats)));
+                System.out.println("  Cheeses: " + (cheeses.isEmpty() ? "none" : String.join(", ", cheeses)));
+                System.out.println("  Other toppings: " + (others.isEmpty() ? "none" : String.join(", ", others)));
+                System.out.println("  Sauces: " + (sauces.isEmpty() ? "none" : String.join(", ", sauces)));
+                System.out.println();
+
+                index++;
+            }
+            System.out.printf("Sandwich subtotal: $%.2f%n", sandwichesTotal);
         }
 
-        PriceService priceService = new PriceService();
-        boolean checkingOut = true;
+        System.out.println();
 
-        while (checkingOut) {
-            System.out.println("\nCHECKOUT");
+        // Drinks
+        System.out.println("Drinks:");
+        if (order.getDrinks().isEmpty()) {
+            System.out.println("  None");
+        } else {
+            int index = 1;
+            for (Drink d : order.getDrinks()) {
+                double price = priceService.drinkPrice(d.getSize());
+                drinksTotal += price;
 
-            // Show Sandwiches
-            System.out.println("\nSandwiches:");
-            if (order.getSandwiches().isEmpty()) {
-                System.out.println("  (none)");
-            } else {
-                for (int i = 0; i < order.getSandwiches().size(); i++) {
-                    System.out.println("Sandwich #" + (i + 1) + ":");
-                    System.out.print(formatSandwichForOutput(order.getSandwiches().get(i)));
-                    System.out.println();
-                }
+                System.out.printf("  Drink #%d - size: %s, flavor: %s - $%.2f%n",
+                        index, d.getSize(), d.getFlavor(), price);
+                index++;
             }
+            System.out.printf("Drinks subtotal: $%.2f%n", drinksTotal);
+        }
 
+        System.out.println();
 
-            // Show Drinks
-            System.out.println("\nDrinks:");
-            if (order.getDrinks().isEmpty()) {
-                System.out.println("  (none)");
-            } else {
-                for (int i = 0; i < order.getDrinks().size(); i++) {
-                    Drink d = order.getDrinks().get(i);
-                    System.out.println("  Drink #" + (i + 1) +
-                            " - size: " + d.getSize() +
-                            ", flavor: " + d.getFlavor());
-                }
+        // Chips
+        System.out.println("Chips:");
+        if (order.getChips().isEmpty()) {
+            System.out.println("  None");
+        } else {
+            int index = 1;
+            for (Chips c : order.getChips()) {
+                double price = priceService.chipsPrice();
+                chipsTotal += price;
+
+                System.out.printf("  Chips #%d - type: %s - $%.2f%n",
+                        index, c.getType(), price);
+                index++;
             }
+            System.out.printf("Chips subtotal: $%.2f%n", chipsTotal);
+        }
 
-            System.out.println("\nChips:");
-            if (order.getChips().isEmpty()) {
-                System.out.println("  (none)");
-            } else {
-                for (int i = 0; i < order.getChips().size(); i++) {
-                    Chips c = order.getChips().get(i);
-                    System.out.println("  Chips #" + (i + 1) +
-                            " - type: " + c.getType());
-                }
-            }
+        System.out.println();
 
+        double total = sandwichesTotal + drinksTotal + chipsTotal;
+        System.out.printf("Order total: $%.2f%n", total);
+        System.out.println();
+        System.out.println("1) Confirm Order");
+        System.out.println("0) Cancel");
 
-            // Calculate and show total
-            double total = order.calculateTotal(priceService);
-            System.out.printf("\nTotal Price: $%.2f\n", total);
-
-            System.out.println("\n1) Confirm Order");
-            System.out.println("0) Cancel");
+        boolean choosing = true;
+        while (choosing) {
             System.out.print("Choose: ");
-
             String input = scanner.nextLine();
 
             switch (input) {
                 case "1":
-                    // confirm and write receipt
                     confirmOrder(order, total);
-                    checkingOut = false;
+                    choosing = false;
                     break;
-
                 case "0":
-                    System.out.println("Checkout cancelled.");
-                    checkingOut = false;
+                    System.out.println("Order cancelled.");
+                    choosing = false;
                     break;
-
                 default:
                     System.out.println("Invalid selection.");
-                    break;
             }
         }
     }
 
 
+
+    // Writes a detailed receipt with per item prices and subtotals.
     private void confirmOrder(Order order, double total) {
-        try {
-            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
-            String fileName = "receipt-" + LocalDateTime.now().format(fmt) + ".txt";
+        PriceService priceService = new PriceService();
 
-            FileWriter writer = new FileWriter("receipts"+ "/" + fileName);
+        double sandwichesTotal = 0.0;
+        double drinksTotal = 0.0;
+        double chipsTotal = 0.0;
 
-            writer.write("=== VERY DELI SANDWICHES RECEIPT ===\n");
-            writer.write("Time: " + LocalDateTime.now() + "\n\n");
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+        String fileName = "receipt-" + now.format(formatter) + ".txt";
 
-            // Sandwiches
+        // Make sure receipts folder exists
+        java.io.File receiptsDir = new java.io.File("receipts");
+        receiptsDir.mkdirs();
+
+        try (FileWriter writer = new FileWriter(new java.io.File(receiptsDir, fileName))) {
+
+            writer.write("VERY DELI SANDWICHES RECEIPT\n");
+            writer.write("Time: " + now + "\n\n");
+
+            // --- Sandwiches section ---
             writer.write("Sandwiches\n");
             if (order.getSandwiches().isEmpty()) {
-                writer.write("  (none)\n\n");
+                writer.write("  None ($0.00)\n\n");
             } else {
-                for (int i = 0; i < order.getSandwiches().size(); i++) {
-                    writer.write("Sandwich #" + (i + 1) + ":\n");
-                    writer.write(formatSandwichForOutput(order.getSandwiches().get(i)));
-                    writer.write("\n");
+                int index = 1;
+                for (Sandwich s : order.getSandwiches()) {
+
+                    double sandwichPrice = s.calculatePrice(priceService);
+                    sandwichesTotal += sandwichPrice;
+
+                    // Group toppings
+                    List<String> meats = new ArrayList<>();
+                    List<String> cheeses = new ArrayList<>();
+                    List<String> others = new ArrayList<>();
+                    List<String> sauces = new ArrayList<>();
+
+                    for (String t : s.getToppings()) {
+                        if (t.startsWith("Meat: ")) {
+                            meats.add(t.substring("Meat: ".length()));
+                        } else if (t.startsWith("Cheese: ")) {
+                            cheeses.add(t.substring("Cheese: ".length()));
+                        } else if (t.startsWith("Sauce: ")) {
+                            sauces.add(t.substring("Sauce: ".length()));
+                        } else {
+                            others.add(t);
+                        }
+                    }
+
+                    writer.write(String.format("Sandwich #%d - $%.2f%n", index, sandwichPrice));
+                    writer.write("  Size: " + s.getSize() + " inch\n");
+                    writer.write("  Bread: " + s.getBread() + "\n");
+                    writer.write("  Toasted: " + (s.isToasted() ? "yes" : "no") + "\n");
+                    writer.write("  Meats: " + (meats.isEmpty() ? "none" : String.join(", ", meats)) + "\n");
+                    writer.write("  Cheeses: " + (cheeses.isEmpty() ? "none" : String.join(", ", cheeses)) + "\n");
+                    writer.write("  Other toppings: " + (others.isEmpty() ? "none" : String.join(", ", others)) + "\n");
+                    writer.write("  Sauces: " + (sauces.isEmpty() ? "none" : String.join(", ", sauces)) + "\n\n");
+
+                    index++;
                 }
+                writer.write(String.format("Sandwich subtotal: $%.2f%n%n", sandwichesTotal));
             }
 
-            // Drinks
+            // --- Drinks section ---
             writer.write("Drinks\n");
             if (order.getDrinks().isEmpty()) {
-                writer.write("  (none)\n\n");
+                writer.write("  None ($0.00)\n\n");
             } else {
-                for (int i = 0; i < order.getDrinks().size(); i++) {
-                    Drink d = order.getDrinks().get(i);
-                    writer.write("  Drink #" + (i + 1) + ": size=" +
-                            d.getSize() + ", flavor=" + d.getFlavor() + "\n");
+                int index = 1;
+                for (Drink d : order.getDrinks()) {
+                    double price = priceService.drinkPrice(d.getSize());
+                    drinksTotal += price;
+
+                    writer.write(String.format(
+                            "  Drink #%d - size: %s, flavor: %s - $%.2f%n",
+                            index, d.getSize(), d.getFlavor(), price
+                    ));
+                    index++;
                 }
-                writer.write("\n");
+                writer.write(String.format("Drinks subtotal: $%.2f%n%n", drinksTotal));
             }
 
-            // Chips
+            // --- Chips section ---
             writer.write("Chips\n");
             if (order.getChips().isEmpty()) {
-                writer.write("  (none)\n\n");
+                writer.write("  None ($0.00)\n\n");
             } else {
-                for (int i = 0; i < order.getChips().size(); i++) {
-                    Chips c = order.getChips().get(i);
-                    writer.write("  Chips #" + (i + 1) + ": type=" +
-                            c.getType() + "\n");
+                int index = 1;
+                for (Chips c : order.getChips()) {
+                    double price = priceService.chipsPrice();
+                    chipsTotal += price;
+
+                    writer.write(String.format(
+                            "  Chips #%d - type: %s - $%.2f%n",
+                            index, c.getType(), price
+                    ));
+                    index++;
                 }
-                writer.write("\n");
+                writer.write(String.format("Chips subtotal: $%.2f%n%n", chipsTotal));
             }
 
-            writer.write(String.format("TOTAL: $%.2f%n", total));
+            double grandTotal = sandwichesTotal + drinksTotal + chipsTotal;
 
-            writer.close();
+            // --- Totals block ---
+            writer.write("Totals\n");
+            writer.write(String.format("  Sandwiches: $%.2f%n", sandwichesTotal));
+            writer.write(String.format("  Drinks:     $%.2f%n", drinksTotal));
+            writer.write(String.format("  Chips:      $%.2f%n", chipsTotal));
+            writer.write(String.format("  GRAND TOTAL: $%.2f%n", grandTotal));
 
-            System.out.println("Order confirmed. Receipt saved as: " + "receipts"+ "/" + fileName);
-        } catch (Exception e) {
-            System.out.println("Error writing receipt.");
+        } catch (IOException e) {
+            System.out.println("Error writing receipt: " + e.getMessage());
+            return;
+        }
+        try {
+            Thread.sleep(150);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        System.out.println("Order confirmed. Receipt saved as: receipts/" + fileName);
+    }
+    private void addSpacing() {
+        for (int i = 0; i < 40; i++) {
+            System.out.println();
         }
     }
-
-
-
 }

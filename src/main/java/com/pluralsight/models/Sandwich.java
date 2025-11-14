@@ -84,29 +84,9 @@ public class Sandwich {
             }
             else if (x.startsWith("sauce:")) {
             }
-            else {
-                total += 0.25;
-            }
+            else {}
         }
-
         return total;
-    }
-
-
-    private boolean isMeat(String x) {
-        return x.equals("steak") ||
-                x.equals("ham") ||
-                x.equals("salami") ||
-                x.equals("roast beef") ||
-                x.equals("chicken") ||
-                x.equals("bacon");
-    }
-
-    private boolean isCheese(String x) {
-        return x.equals("american") ||
-                x.equals("provolone") ||
-                x.equals("cheddar") ||
-                x.equals("swiss");
     }
 
     @Override
