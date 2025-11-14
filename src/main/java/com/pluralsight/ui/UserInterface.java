@@ -15,6 +15,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -104,14 +106,15 @@ public class UserInterface {
 
         while (editing) {
             System.out.println("\nSandwich Builder");
-            System.out.println("Current: " + sandwich.toString());
+            printCurrentSandwich(sandwich);
+            System.out.println();
             System.out.println("1) Select bread");
             System.out.println("2) Select size");
             System.out.println("3) Toppings");
             System.out.println("4) Sauces");
             System.out.println("5) Toasted?");
-            System.out.println("9) Add sandwich to order");
-            System.out.println("0) Cancel");
+            System.out.println("9) Save sandwich and return to order menu");
+            System.out.println("0) Discard sandwich and return to order menu");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -138,14 +141,72 @@ public class UserInterface {
                     editing = false;
                     break;
                 case "0":
-                    System.out.println("Sandwich cancelled.");
-                    editing = false;
+                    // If sandwich is EMPTY, just cancel
+                    boolean isDefault =
+                            SandwichSize.FOUR_INCH.equals(sandwich.getSize()) &&
+                                    BreadType.WHITE.equals(sandwich.getBread()) &&
+                                    !sandwich.isToasted() &&
+                                    sandwich.getToppings().isEmpty();
+
+                    if (isDefault) {
+                        System.out.println("Sandwich cancelled.");
+                        editing = false;
+                    } else {
+                        // really want to discard the current sandwich?
+                        System.out.print("You have a sandwich in progress. Discard it (y/n): ");
+                        String confirm = scanner.nextLine().trim().toLowerCase();
+
+                        if (confirm.startsWith("y")) {
+                            System.out.println("Sandwich cancelled.");
+                            editing = false;
+                        } else {
+                            System.out.println("Keeping current sandwich.");
+                        }
+                    }
                     break;
+
                 default:
                     System.out.println("Invalid selection.");
             }
         }
     }
+    // Prints current sandwich
+    private void printCurrentSandwich(Sandwich sandwich) {
+        System.out.println("\nCurrent sandwich:");
+        System.out.print(formatSandwichForOutput(sandwich));
+    }
+
+    private String formatSandwichForOutput(Sandwich sandwich) {
+        List<String> meats = new ArrayList<>();
+        List<String> cheeses = new ArrayList<>();
+        List<String> sauces = new ArrayList<>();
+        List<String> others = new ArrayList<>();
+
+        for (String t : sandwich.getToppings()) {
+            String lower = t.toLowerCase();
+
+            if (lower.startsWith("meat:")) {
+                meats.add(t.substring("Meat: ".length()));
+            } else if (lower.startsWith("cheese:")) {
+                cheeses.add(t.substring("Cheese: ".length()));
+            } else if (lower.startsWith("sauce:")) {
+                sauces.add(t.substring("Sauce: ".length()));
+            } else {
+                others.add(t);
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("  Size: ").append(sandwich.getSize()).append(" inch\n");
+        sb.append("  Bread: ").append(sandwich.getBread()).append("\n");
+        sb.append("  Toasted: ").append(sandwich.isToasted() ? "yes" : "no").append("\n");
+        sb.append("  Meats: ").append(meats.isEmpty() ? "none" : String.join(", ", meats)).append("\n");
+        sb.append("  Cheeses: ").append(cheeses.isEmpty() ? "none" : String.join(", ", cheeses)).append("\n");
+        sb.append("  Other toppings: ").append(others.isEmpty() ? "none" : String.join(", ", others)).append("\n");
+        sb.append("  Sauces: ").append(sauces.isEmpty() ? "none" : String.join(", ", sauces)).append("\n");
+        return sb.toString();
+    }
+
 
     private void selectTopping(Sandwich sandwich) {
         boolean choosing = true;
@@ -219,12 +280,12 @@ public class UserInterface {
         }
     }
     private void addChipsFlow(Order order) {
-        boolean ordering = true;
+        boolean choosing = true;
 
-        while (ordering) {
+        while (choosing) {
             System.out.println("\nChips");
-            System.out.println("1) Add Chips");
-            System.out.println("0) Cancel Order");
+            System.out.println("1) Add chips");
+            System.out.println("0) Back to order menu");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -233,20 +294,30 @@ public class UserInterface {
                 case "1":
                     addChipType(order);
                     break;
+
                 case "0":
-                    System.out.println("Order cancelled.");
-                    ordering = false;
+                    System.out.println("Returning to order menu.");
+                    choosing = false;
                     break;
+
                 default:
                     System.out.println("Invalid selection.");
+                    break;
             }
         }
     }
 
 
     private void addChipType(Order order) {
-        System.out.println("Add Chips");
+        System.out.print("Enter chip type (e.g. Classic, BBQ, Sour Cream): ");
+        String type = scanner.nextLine();
+
+        Chips chips = new Chips(type);
+        order.addChips(chips);
+
+        System.out.println("Added chips: " + chips.toString());
     }
+
     private void chooseDrinkSize(Order order) {
         System.out.println("\nSelect size: 1) Small  2) Medium  3) Large");
         System.out.print("Choose: ");
@@ -606,32 +677,40 @@ public class UserInterface {
             // Show Sandwiches
             System.out.println("\nSandwiches:");
             if (order.getSandwiches().isEmpty()) {
-                System.out.println("- None");
+                System.out.println("  (none)");
             } else {
                 for (int i = 0; i < order.getSandwiches().size(); i++) {
-                    System.out.println("- " + order.getSandwiches().get(i));
+                    System.out.println("Sandwich #" + (i + 1) + ":");
+                    System.out.print(formatSandwichForOutput(order.getSandwiches().get(i)));
+                    System.out.println();
                 }
             }
+
 
             // Show Drinks
             System.out.println("\nDrinks:");
             if (order.getDrinks().isEmpty()) {
-                System.out.println("- None");
+                System.out.println("  (none)");
             } else {
                 for (int i = 0; i < order.getDrinks().size(); i++) {
-                    System.out.println("- " + order.getDrinks().get(i));
+                    Drink d = order.getDrinks().get(i);
+                    System.out.println("  Drink #" + (i + 1) +
+                            " - size: " + d.getSize() +
+                            ", flavor: " + d.getFlavor());
                 }
             }
 
-            // Show Chips
             System.out.println("\nChips:");
             if (order.getChips().isEmpty()) {
-                System.out.println("- None");
+                System.out.println("  (none)");
             } else {
                 for (int i = 0; i < order.getChips().size(); i++) {
-                    System.out.println("- " + order.getChips().get(i));
+                    Chips c = order.getChips().get(i);
+                    System.out.println("  Chips #" + (i + 1) +
+                            " - type: " + c.getType());
                 }
             }
+
 
             // Calculate and show total
             double total = order.calculateTotal(priceService);
@@ -665,50 +744,62 @@ public class UserInterface {
 
     private void confirmOrder(Order order, double total) {
         try {
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+            String fileName = "receipt-" + LocalDateTime.now().format(fmt) + ".txt";
 
-            DateTimeFormatter frmt = DateTimeFormatter.ofPattern("yyyyMMdd-hhmmss");
-            String fileName = "receipt-" + LocalDateTime.now().format(frmt) + ".txt";
+            FileWriter writer = new FileWriter("receipts"+ "/" + fileName);
 
-            FileWriter writer = new FileWriter(fileName);
-
-            writer.write("VERY DELI SANDWICHES\n");
+            writer.write("=== VERY DELI SANDWICHES RECEIPT ===\n");
             writer.write("Time: " + LocalDateTime.now() + "\n\n");
 
+            // Sandwiches
             writer.write("Sandwiches\n");
             if (order.getSandwiches().isEmpty()) {
-                writer.write("None\n");
+                writer.write("  (none)\n\n");
             } else {
                 for (int i = 0; i < order.getSandwiches().size(); i++) {
-                    writer.write((i + 1) + ") " + order.getSandwiches().get(i).toString() + "\n");
+                    writer.write("Sandwich #" + (i + 1) + ":\n");
+                    writer.write(formatSandwichForOutput(order.getSandwiches().get(i)));
+                    writer.write("\n");
                 }
             }
 
-            writer.write("\nDrinks\n");
+            // Drinks
+            writer.write("Drinks\n");
             if (order.getDrinks().isEmpty()) {
-                writer.write("None\n");
+                writer.write("  (none)\n\n");
             } else {
                 for (int i = 0; i < order.getDrinks().size(); i++) {
-                    writer.write((i + 1) + ") " + order.getDrinks().get(i).toString() + "\n");
+                    Drink d = order.getDrinks().get(i);
+                    writer.write("  Drink #" + (i + 1) + ": size=" +
+                            d.getSize() + ", flavor=" + d.getFlavor() + "\n");
                 }
+                writer.write("\n");
             }
 
-            writer.write("\nChips\n");
+            // Chips
+            writer.write("Chips\n");
             if (order.getChips().isEmpty()) {
-                writer.write("None\n");
+                writer.write("  (none)\n\n");
             } else {
                 for (int i = 0; i < order.getChips().size(); i++) {
-                    writer.write((i + 1) + ") " + order.getChips().get(i).toString() + "\n");
+                    Chips c = order.getChips().get(i);
+                    writer.write("  Chips #" + (i + 1) + ": type=" +
+                            c.getType() + "\n");
                 }
+                writer.write("\n");
             }
 
-            writer.write(String.format("\nTOTAL: $%.2f\n", total));
+            writer.write(String.format("TOTAL: $%.2f%n", total));
 
             writer.close();
-            System.out.println("Order confirmed. Receipt saved as: " + fileName);
-        } catch (IOException e) {
-            System.out.println("Failed to write receipt: " + e.getMessage());
+
+            System.out.println("Order confirmed. Receipt saved as: " + "receipts"+ "/" + fileName);
+        } catch (Exception e) {
+            System.out.println("Error writing receipt.");
         }
     }
+
 
 
 }
